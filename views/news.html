@@ -1,0 +1,268 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+   String BASE_PATH = request.getContextPath();
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="user-scalable=no">
+    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>大华云学院</title>
+
+	<link rel="stylesheet" href="../JS/lib/light7.css">
+	<link rel="stylesheet" href="../css/dropload.css">
+	<script src="../JS/lib/jquery-1.10.2.js"></script>
+	<script src="../JS/lib/light7.js"></script>
+
+	<style>
+		html, body {font-family: '微软雅黑'}
+		html {font-size: calc( 100vw / 20 );}
+		.icon-red {color:red;}
+		.content-padded {margin: 0 .5rem}
+		.padding-top {padding-top: .5rem;}
+		.choose-card {background-color: white; height: 4.5rem; overflow: hidden; border: 1px solid #e8e8e8;}
+		.icon-text {position: relative; top:1.25rem; margin:0 auto; width: 7.2rem; height: 2rem;}
+		.card-icon {display: inline-block; width: 2rem; height: 2rem; border-radius: 3.5rem; overflow: hidden;}
+		.icon-college {background: #f4430b url(../image/college/college.png); background-size: 2rem, 2rem;}
+		.icon-support {background: #f4430b url(../image/college/support.png); background-size: 2rem, 2rem;}
+		.icon-title {position: absolute; left: 2.5rem; font-size: 0.85rem; font-weight:bold;}
+		.icon-msg {position: absolute; top: 1.1rem; left: 2.5rem; font-size: 0.7rem; color: #999;}
+		.line-title {margin: 0; padding: .7rem .2rem; color: #555;}
+		.card-nomargin {margin: 0; margin-bottom: .5rem;}
+		.cursor-active:active {background-color:#d9d9d9; transition: 0ms;}
+		.cursor-active {transition:300ms;}
+		.card div {padding: .3rem .75rem; min-height: .8rem;}
+		div.card-header {font-size: .8rem;}
+		div.card-content {padding: 0; font-size: .7rem; color: #999;}
+		div.card-footer {justify-content: flex-start; padding:.2rem .75rem; font-size:.6rem; color: #999;}
+		div.card-footer span {padding-right: .75rem;}
+		div.card-footer span:last-child {position:absolute; right:0;}
+	</style>
+</head>
+<script>
+	var base_path = "<%=BASE_PATH%>";
+</script>
+<noscript><p><img src="//cloudwx.dahuatech.com/piwik/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+<body>
+	<div class="page_group">
+		<div class="page page-current">
+			<header class="bar bar-nav">
+				<!-- <a class="icon icon-left icon-red pull-left">back</a> -->
+				<!-- <a class="icon icon-refresh icon-red pull-right"></a> -->
+				<h1 class="title">标题</h1>
+			</header>
+
+			<div class="content content-padded">
+				<div class="row padding-top">
+					<div class="col-50 choose-card cursor-active" id="collegePage">
+						<div class="icon-text">
+							<div class="card-icon icon-college"></div>
+							<span class="icon-title">自主学堂</span>
+							<span class="icon-msg">体验实时学习</span>
+						</div>
+					</div>
+					<div class="col-50 choose-card cursor-active" id="supportPage">
+						<div class="icon-text">
+							<div class="card-icon icon-support"></div>
+							<span class="icon-title">配单工具</span>
+							<span class="icon-msg">享受快捷配单</span>
+						</div>
+					</div>
+				</div>
+
+				<p class="line-title">大家都在学什么呐？</p>
+
+				<div id="scrollArea">
+					<div id="lists">
+						<div class="card card-nomargin cursor-active" id="toDetail_test">
+							<div class="card-header">这是一个卡片的卡头</div>
+							<div class="card-content">
+								<div class="card-content-inner">这是一个卡片样式测试，云存储节点上的各个流媒体服务如下图，经常需要单独进行升级解决问题，本地专题做了一下总结，介绍下各个服务升级方法。</div>
+							</div>
+							<div class="card-footer">
+								<span>2018-06-29</span>
+								<span>12,287浏览</span>
+								<span>257回复</span>
+								<span>阅读全文</span>
+							</div>
+						</div>
+						<div class="card card-nomargin cursor-active">
+							<div class="card-header">这是一个卡片的卡头</div>
+							<div class="card-content">
+								<div class="card-content-inner">这是一个卡片样式测试，云存储节点上的各个流媒体服务如下图，经常需要单独进行升级解决问题，本地专题做了一下总结，介绍下各个服务升级方法。</div>
+							</div>
+							<div class="card-footer">
+								<span>2018-06-29</span>
+								<span>12,287浏览</span>
+								<span>257回复</span>
+								<span>阅读全文</span>
+							</div>
+						</div>
+						<div class="card card-nomargin cursor-active">
+							<div class="card-header">这是一个卡片的卡头</div>
+							<div class="card-content">
+								<div class="card-content-inner">这是一个卡片样式测试，云存储节点上的各个流媒体服务如下图，经常需要单独进行升级解决问题，本地专题做了一下总结，介绍下各个服务升级方法。</div>
+							</div>
+							<div class="card-footer">
+								<span>2018-06-29</span>
+								<span>12,287浏览</span>
+								<span>257回复</span>
+								<span>阅读全文</span>
+							</div>
+						</div>
+						<div class="card card-nomargin cursor-active">
+							<div class="card-header">这是一个卡片的卡头</div>
+							<div class="card-content">
+								<div class="card-content-inner">这是一个卡片样式测试，云存储节点上的各个流媒体服务如下图，经常需要单独进行升级解决问题，本地专题做了一下总结，介绍下各个服务升级方法。</div>
+							</div>
+							<div class="card-footer">
+								<span>2018-06-29</span>
+								<span>12,287浏览</span>
+								<span>257回复</span>
+								<span>阅读全文</span>
+							</div>
+						</div>
+					</div>
+					<div class="dropload-down">
+						<div class="dropload-refresh">↑上拉加载更多</div>
+						<div class="dropload-load">
+							<span class="loading"></span>加载中
+						</div>
+						<div class="dropload-noData">暂无数据</div>
+					</div>
+				</div>
+				
+			</div>
+
+		</div>
+	</div>
+</body>
+<script>
+	$("#collegePage").click(function () {
+		window.location.href = base_path+"/GetClasses";
+	})
+	$("#supportPage").click(function () {
+		window.location.href = base_path+"/GetSupport";
+	})
+	
+	var template = '<div class="card card-nomargin cursor-active" id="$id">'
+					+'<div class="card-header">$title</div>'
+					+'<div class="card-content">'
+						+'<div class="card-content-inner">$body</div>'
+					+'</div>'
+					+'<div class="card-footer">'
+						+'<span>$date</span>'
+						+'<span>$numView浏览</span>'
+						+'<span>$num回复</span>'
+						+'<span>阅读全文</span>'
+					+'</div>'
+				+'</div>';
+
+
+	//起始查询
+    // 【这些功能参数利用cookie实现阅读文章返回后能自动定位】
+    var scroll_top = Number(getCookie("click_top"));   // cookie中返回时需要滚动的高度
+    if(scroll_top > 150) scroll_top -= 150;     // 滚动差值，为了不至于滚到最顶部影响阅读
+    var scroll_num = Number(getCookie("click_num"));   // cookie中滚动时前提需要加载多少
+    var delay = 500;           // 加载动画延迟
+    if(scroll_num) delay = 0;
+
+    var start = 0;
+    // 每页展示3个
+    var limit = scroll_num || 3;
+    var keyword = "";
+
+    var winHeight = $(window).height() - $('.bar-nav').height() - $('.row').height() - $('.line-title').height();
+    $('.content').scroll(function(){
+    	var scrollHeight = $('.content').scrollTop();
+    	var contentHeiht = $('#lists').height();
+    	console.log(contentHeiht - scrollHeight +' & '+ winHeight);
+    	// 文档高度 - 滚动高度 < windowHeight - [头部]
+    	if(contentHeiht - scrollHeight < winHeight) {
+    		$('.dropload-refresh').hide();
+    		$('.dropload-load').show();
+    		$.ajax({
+                type: 'POST',
+                //   url: 'http://localhost:8080/weixin/GetArticleSummaryInfo',
+                url: base_path+'/GetSummaryInfo/',
+                contentType: 'application/json;charset=utf-8',
+                data:JSON.stringify(params),
+                dataType:"json",
+                success: function(data){
+                    $('.dropload-load').hide();
+                    var arr = data.data.list;
+                    var arrLen = arr.length;
+                    if(arrLen > 0){
+                    	$('.dropload-refresh').show();
+                        for(var i=0; i<arrLen; i++){
+                        	result += template.replace('$id', arr[i].id)
+                					.replace('$title', arr[i].title)
+                					.replace('$date', getLocalTime(arr[i].createTime / 1000))
+                					.replace('$body', arr[i].description)
+                        }
+                    }else{
+                        $('.dropload-noData').show();
+                    }
+                    // 恢复每次加载三个
+                    limit = 3;
+                    // 删除cookie
+                    deleteCookie("click_top");
+                    deleteCookie("click_num");
+                    // 为了测试，延迟1秒加载
+                    setTimeout(function(){
+                        // 插入数据到页面，放到最后面
+                        $('#scrollArea').append(result);
+                        if(delay != 0) return;    // 是否需要滚动
+                        //$("html, body").animate({scrollTop: scroll_top + "px"},500);  // 滚动到指定位置
+                        // $(window).scrollTop(scroll_top);
+                        delay = 500;  // 恢复延迟
+                    },delay);
+                },
+                error: function(xhr, type){
+                    console.log('Ajax error!');
+                    // 恢复每次加载三个
+                    limit = 3;
+                }
+            });
+    	}
+    })
+
+	
+
+   $("#scrollArea").on('click','.card-nomargin',function(event){
+        id = $(this).attr('id');
+        // 保存cookie
+        setCookie("click_id", id, 0);
+        setCookie("click_top", $(this).offset().top, 0);
+        var num = document.getElementsByClassName("card-nomargin").length;
+        setCookie("click_num", num+3, 0);
+        window.location.href=base_path+"/ArticleDetailInfo/"+id;
+    })
+
+    function setCookie(name, value, date) {
+        var d = new Date();
+        d.setTime(d.getTime() + (date*24*60*60*1000));
+        var expires = "expires" + d.toUTCString();
+        document.cookie = name + "=" +　value + ";" + expires;
+    }
+
+    function deleteCookie(name) {
+        setCookie(name, "", -1);
+    }
+
+    function getCookie(name) {
+        var cookieList = document.cookie.split(';');
+        for(var i=0; i<cookieList.length; i++) {
+            var c = cookieList[i];
+            if(c.indexOf(name + "=") != -1) return c.substring(name.length+2, c.length);
+        }
+        return "";
+    }
+</script>
+</html>

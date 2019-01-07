@@ -1,0 +1,1747 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%
+   String BASE_PATH = request.getContextPath();
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="user-scalable=no">
+    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<title>自主学堂</title>
+
+	<link rel="stylesheet" href="../JS/lib/light7.css">
+	<link rel="stylesheet" href="../css/iconfont.css">
+	<script src="../JS/lib/jquery-1.10.2.js"></script>
+	<script src="../JS/lib/light7.js"></script>
+	<script src="../JS/lib/html2canvas.js"></script>
+
+	<style>
+		html {font-size: calc( 100vw / 20 );}
+		html, body {font-family: -apple-system, BlinkMacSystemFont, "PingFang SC","Helvetica Neue","STHeiti","Microsoft YaHei",Tahoma,Simsun,san-serif;}
+		p {margin: 0; padding: 0;}
+		input {border:none; padding: .05rem}
+		header.bar {z-index: 999;}
+		h2,h3,h4,h5,h6 {margin: 0; font-weight: 500;}
+		i {background-repeat: no-repeat;}
+		.bar .title a {position: absolute; left: 0; padding: 0 .75rem; overflow: hidden;}
+		.bar .title a i {font-size: 1.1rem; color: #f30;}
+
+		/*page animation*/
+		.page_group {overflow: hidden;}
+		.page {transition: 300ms; visibility: visible; visibility: visible; box-shadow: 0 0 40px #00000045; transform: translate3d(0, 0, 0)}
+		.page-toR-100 {transform: translate3d(100%, 0, 0); visibility: hidden;}
+		.page-toL-50 {transform: translate3d(-50%, 0, 0);}
+
+		/*menu*/
+		.card-title {margin-bottom: .5rem; padding: .5rem; height: 2.5rem; width: 100%; background-color: #fff; font-size: .75rem; line-height: 1.5rem;}
+		.card-title input {width: 10rem; font-size: .7rem; padding: .05rem .2rem; margin-left: 1.5rem; border: none;}
+		.card-title-sm {padding: .35rem .75rem; height: 2.2rem;}
+		.card-nomargin {margin: 0; margin-bottom: .5rem;}
+		.cursor-active:active {background-color:#d9d9d9; transition: 0ms;}
+		.cursor-active {transition:300ms;}
+		.card-item {width: 100%; text-align: center; font-size: .75rem; font-weight: 500}
+		.card-item-inline {width: 33.3%; float: left;}
+		.card-item span {line-height: 3rem; transition: 300ms;}
+		.card-item img {margin-top: .35rem; width: 2rem; height: 2rem; vertical-align: middle;}
+		.card-item i {display: inline-block; margin: -0.2rem 0.2rem 0 0; vertical-align: middle; width: 1.5rem; height: 1.5rem; background-size: 1.5rem 1.5rem;} 
+		.tab-bar {position: absolute; bottom: 0; left: 0; width: 33.3%; background: #F30; height: .25rem; transition: 300ms;}
+
+		/*add_videoCloud || add_picCloud || add_calcCloud*/
+		.result {position: relative; margin: .5rem 0 0 0; overflow: hidden; background-color: #fff;}
+		.result-item {display: inline-block; width: 50%; float: left; font-size: .7rem; padding: 1rem 0 1rem 3.5rem;}
+		.result-item p span {font-size: .8rem; color: #F30; font-weight: 500}
+		.result-item p:nth-child(2) {color: #999;}
+		.border-item {position: absolute; width: 50%; height: 1.75rem; top: 0; bottom: 0; margin: auto; border-right:1px solid #eee;}
+		.list-block {margin: .5rem 0; font-size: .75rem;}
+		.list-block input[type=number], .list-block input[type=text] {color: #777;}
+		.list-block ul {background: inherit;}
+		.list-block li {background: #fff;}
+		.list-block .item-title {min-width: 55%;}
+		.list-block .item-after {flex-shrink: 1;}
+		.item-inner {font-size: .75rem;}
+		.item-after input {font-color: #999 !important; text-align: right; height: auto !important;}
+		.footbtn {position: absolute; bottom: 0; width: 100%; padding: .5rem .25rem; font-size: .75rem; font-weight: 500; border-top: 1px solid #ddd; background: #eee;}
+		.footbtn>div {display: flex; width: 100%;}
+		.footbtn p {width: 100%; text-align: center; line-height: 2.2rem; border-radius: 3px;}
+		.two-btn P:nth-child(1) {margin-right: .125rem;}
+		.two-btn P:nth-child(2) {margin-left: .125rem;}
+		.btn-red {background: #f30; color: #fff;}
+		.btn-white {background: #fff;}
+
+		/*result_page*/
+		.msg-title {display:flex; padding: 0 0 0 .5rem; justify-content: space-between; width: 100%; font-size: .65rem; color: #999; align-items: center;}
+		.msg-title>span {height: 2rem; line-height: 2rem; overflow: hidden; max-width: 5rem;}
+		.msg-title i {display: inline-block; position: absolute; top: 0.55rem; width: 0.8rem; height: 0.8rem;; background-size: 0.8rem 0.8rem;}
+		.msg-title span:nth-last-child(1) i { top: 0.5rem; width: 1rem; height: 1rem;; background-size: 1rem 1rem;}
+		.msg-title strong {color: #333; padding-left: 25px;}
+		.add-btn {width: 60px; padding: 0 20px;}
+		.msg-pannel {max-height: calc(100% - 2rem); overflow: auto;}
+		.msg-row {display: flex; width: 100%; justify-content: space-between; padding: .5rem 0; margin: k.2rem 0; background: #fff; border-top: 1px solid #eee;}
+		.msg-row:nth-child(1) {border-top: none;}
+		.msg-item {width: 100%; max-width: 25%; overflow: hidden;}
+		.msg-item h1 {margin:0; font-size: .8rem; font-weight: 600; color: #f30; text-align: center;}
+		.msg-item p {margin: .1rem 0 0 0 ; color: #999; font-size: .6rem; text-align: center;}
+		.list-block .radio-content {display: block; padding: .25rem .75rem 0 .75rem;}
+		.switch-container {position: absolute; top:5.7rem; bottom: 0; width: 100%; visibility: hidden; opacity: 0; transition-duration: 150ms;}
+		.add-row {position: absolute; left: 1.5rem; right: 1.5rem; top: 2rem; bottom: 2rem; padding: .35rem; background: #fff;}
+		.add-row>div {width: 100%; height: 100%; border: 1px solid #eee;}
+		.add-row>div>div{position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);}
+		.add-row i {display: block; width: 36px; height: 36px; margin: 0.2rem auto; background-size: 36px 36px;}
+		.add-row span {color: #999;}
+
+		/*config_page*/
+		.radio-content div {display: flex; padding: .4rem 0 .65rem 0; color: #777; border-bottom: 1px solid #e7e7e7;}
+		.radio-content span {border: 1px solid #eee; flex-grow: 1; height: 1.8rem; line-height: 1.8rem; text-align: center; transition: 300ms;}
+		span.radio-checked {background: rgba(255, 82, 0, 0.42); border: 1px solid rgba(255, 82, 0, 0.52); transition: 300ms;} 
+		.label-switch input[type="checkbox"]:checked + .checkbox {background-color: #f30;}
+
+		/*build_page*/
+		.build-item>p {margin: .5rem 1rem; font-size: .8rem; color: #777;}
+		.item-container {padding: 0 .5rem; margin: 0 .65rem; font-size: .7rem; background-color: #fff; border-radius: 3px; box-shadow: 0 0 1rem #ddd; line-height: 1.3rem;}
+		.item-container div {border-top: 1px solid #eee; padding: .5rem 0;}
+		.item-container div:nth-child(1) {border-top: none;}
+		.item-container div h3 {font-size:.8rem; margin-bottom: .2rem; font-size: .75rem;}
+		.item-container div h3>span {float:right; padding-right: .5rem;}
+		.item-container div h3>span span {color: #f30; font-size: .9rem; padding: 0 .25rem; vertical-align: top;}
+		.item-container div p>span:nth-child(1) {display: inline-block; width: 25%; color: #999;}
+		.item-container div p>span:nth-child(2) {display: inline-block; width: 65%; vertical-align: top;}
+		
+		.download-pic {position:absolute; top: 2.5%; left: 2.5%; z-index: 999; overflow:scroll; border-radius: .25rem; width:95%; height:95%; box-shadow: 0 0 20px #777; display: none;}
+		.download-close {position: absolute; right: 5%; top: 4%; padding: .2rem .5rem; border-radius: .75rem; background: #555; color:#fff; z-index: 1000; display: none;}
+
+		/*common animation*/
+		
+		.mask {position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: rgba(0, 0, 0, .3); visibility: hidden; z-index: 2999; opacity: 0; transition: 300ms;}
+		.modal-container {display: flex; justify-content: center; align-items: center;}
+		.modal-container>div {min-width: 60%; max-width: 90%; background: #eee; border-radius: 6px; transform: scale(1.3); transition: 300ms;}
+		.modal-msg {min-height: 1rem; text-align: center; padding: .75rem;}
+		.modal-btn {display:flex; border-top: 1px solid #ccc;}
+		.modal-btn p {width: 100%; text-align: center; font-size: .8rem; line-height: 1.75rem;}
+		.modal-btn p:nth-child(1) {border-right: 1px solid #ccc;}
+		.info-container {position: absolute; top: 50%; left: 50%; transform: translate(-50%, 0%); z-index: 3999; visibility: hidden; opacity: 0; transition: 300ms;}
+		.info-container div {background: rgba(0, 0, 0, .65); color: #fff; padding: 0.3rem .5rem; border-radius: 1rem; font-size: .7rem;}
+
+		.visible-show {visibility: visible; opacity: 1}
+		.info-show {transform: translate(-50%, -50%); visibility: visible; opacity: 1}
+		.cursor-active:active {background-color:#d9d9d9; transition: 0ms;}
+		.cursor-active {transition:300ms;}
+		.cursor-active-red:active {background-color:#b30; transition: 0ms;}
+		.cursor-active-red {transition:300ms;}
+		.filter-noab {filter: grayscale(1); -webkit-filter: grayscale(1);}
+
+		i.icon-add { background-image: url(../image/college/add.png);}
+		i.icon-storage {background-image: url(../image/college/icon-vstorage.png);}
+		i.icon-file {background-image: url(../image/college/icon-vfile.png);}
+		i.icon-vamount {background-image: url(../image/college/icon-vamount.png);}
+		i.icon-netcount {background-image: url(../image/college/netcount.png);}
+		i.icon-gross {background-image: url(../image/college/gross.png);}
+
+		.icon-video i {background-image: url(../image/college/video.png);}
+		.icon-video-active i {background-image: url(../image/college/video-active.png);}
+		.icon-video-active {color: #f30;}
+		.icon-pic i {background-image: url(../image/college/pic.png);}
+		.icon-pic-active i {background-image: url(../image/college/pic-active.png);}
+		.icon-pic-active {color: #f30;}
+		.icon-calc i {background-image: url(../image/college/calc.png);}
+		.icon-calc-active i {background-image: url(../image/college/calc-active.png);}
+		.icon-calc-active {color: #f30;}
+
+		.icon-addvideo {background-image: url(../image/college/videoAdd.png);}
+		.icon-addpic {background-image: url(../image/college/picAdd.png);}
+		.icon-addcalc {background-image: url(../image/college/cloudAdd.png);}
+	</style>
+</head>
+<script>
+	var base_path = "<%=BASE_PATH%>";
+</script>
+<noscript><p><img src="//cloudwx.dahuatech.com/piwik/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
+<body>
+	<div class="page_group">
+
+		<!-- 配单汇总页 - start -->
+		<div class="page page-current" id="page_result">
+			<header class="bar bar-nav">
+				<!-- <a class="icon icon-left icon-red pull-left">back</a> -->
+				<!-- <a class="icon icon-refresh icon-red pull-right"></a> -->
+				<h1 class="title"><a class="back-btn cursor-active" id="closeAll"><i class="iconfont icon-back"></i></a>配单工具</h1>
+			</header>
+			
+			<div class="content" style="bottom: 3.2rem; top: 2.7rem;">
+				<div class="card-title card-title-sm">
+					<span>项目名称</span><input type="text" id="projectName" placeholder="很长的项目名称写这里"><i></i><i></i>
+				</div>
+
+				<nav class="result">
+					<div class="card-item card-item-inline cursor-active" id="switchToV">
+						<span class="icon-video icon-video-active"><i></i>视频存储</span>
+						<div class="border-item" style="width:33.3%"></div>
+					</div>
+					<div class="card-item card-item-inline cursor-active" id="switchToP">
+						<span class="icon-pic"><i></i>图片存储</span>
+						<div class="border-item" style="width:33.4%"></div>
+					</div>
+					<div class="card-item card-item-inline cursor-active" id="switchToC">
+						<span class="icon-calc"><i></i>&nbsp;云计算&nbsp;&nbsp;</span>
+					</div>
+				</nav>
+				<div class="switch-container visible-show" id="sectionV">
+					<div class="msg-title" id="titleVRow" style="display: none">
+						<span><i class="icon-storage"></i><strong id="vTotcapacity">0.0</strong>TB</span>
+						<span><i class="icon-file"></i><strong id="vTotFiles">0.0</strong>万个</span>
+						<span><i class="icon-vamount"></i><strong id="vTotAmount">0.0</strong>数</span>
+						<span class="add-btn cursor-active addVideoBtn"><i class="icon-add"></i></span>
+					</div>
+					<div class="add-row" id="addVRow">
+						<div class="cursor-active addVideoBtn"> 
+							<div>
+								<i class="icon-addvideo"></i><span>添加视频存储</span>
+							</div>
+						</div>
+					</div>
+					<div class="msg-pannel" id="videoRow">
+					<!-- add video row Dom -->
+					</div>
+				</div>
+				<div class="switch-container" id="sectionP">
+					<div class="msg-title" id="titlePRow" style="display: none">
+						<span><i class="icon-storage"></i><strong id="pTotcapacity">0</strong>TB</span>
+						<span><i class="icon-file"></i><strong id="pTotfiles">0</strong>万张</span>
+						<span><i class="icon-netcount"></i><strong id="ptotBayonetCount">0</strong>TB</span>
+						<span class="add-btn cursor-active addPicBtn"><i class="icon-add"></i></span>
+					</div>
+					<div class="add-row" id="addPRow">
+						<div class="cursor-active addPicBtn"> 
+							<div>
+								<i class="icon-addpic"></i><span>添加图片存储</span>
+							</div>
+						</div>
+					</div>
+					<div class="msg-pannel" id="picRow">
+					</div>
+				</div>
+				<div class="switch-container" id="sectionC">
+					<div class="msg-title" id="titleCRow" style="display: none">
+						<span><i class="icon-gross"></i><strong id="totGross">0.0</strong>亿</span>
+						<span class="add-btn cursor-active addCalcBtn"><i class="icon-add"></i></span>
+					</div>
+					<div class="add-row" id="addCRow">
+						<div class="cursor-active addCalcBtn"> 
+							<div>
+								<i class="icon-addcalc"></i><span>添加云计算</span>
+							</div>
+						</div>
+					</div>
+					<div class="msg-pannel" id="calcRow">
+					</div>
+				</div>
+				
+			</div>
+
+			<div class="footbtn btn-ok" style="width: 100%">
+				<p class="btn-red cursor-active-red" id="btn-next-result">下一步</p>
+			</div>
+			<div class="footbtn btn-ok" style="display: none; width: 100%">
+				<p class="btn-red cursor-active-red" id="btn-build-result">生成配单</p>
+			</div>
+		</div>
+		<!-- 配单汇总页 - end -->
+	
+		<!-- 添加视频存储页 - start -->
+		<div class="page page-current page-toR-100" id="page_video">
+			<header class="bar bar-nav">
+				<h1 class="title"><a class="back-btn cursor-active" id="back-btn-video"><i class="iconfont icon-back"></i></a>新增视频存储</h1>
+			</header>
+			
+			<div class="content" style="bottom: 3.2rem;">
+
+				<div id="video_list_dom">
+					<div class="list-block video-row">
+						<div class="result">
+							<div class="result-item">
+								<p><span id="csVcapacity">33.68</span> TB</p>
+								<p>存储容量</p>
+							</div>
+							<div class="result-item">
+								<p><span id="csVmbps">100</span> Mbps</p>
+								<p>存储码流</p>
+							</div>
+							<div class="border-item"></div>
+						</div>
+						<ul>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">码流(Mbps)</div>
+									<div class="item-after"><input type="number" value="4" id="csVstream"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">视频路数</div>
+									<div class="item-after"><input type="number" value="0" id="csVcamount"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">保存天数</div>
+									<div class="item-after"><input type="number" value="30" id="storeDays"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">CBR系数</div>
+									<div class="item-after"><input type="number" value="1.1" id="csVcbr"></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="footbtn">
+				<div id="vbtn-group-add">
+					<!-- <p class="btn-white cursor-active" id="btn-addAgain-video">继续添加</p> -->
+					<p class="btn-red cursor-active-red" id="btn-add-video">完成</p>
+				</div>
+				<div id="vbtn-group-edit" class="two-btn">
+					<p class="btn-red cursor-active-red" id="btn-delete-video">删除</p>
+					<p class="btn-white cursor-active" id="btn-edited-video">完成修改</p>
+				</div>
+			</div>
+		</div>
+		<!-- 添加视频存储页 - end -->
+
+		<!-- 添加图片存储页 - start -->
+		<div class="page page-current page-toR-100" id="page_pic">
+			<header class="bar bar-nav">
+				<h1 class="title"><a class="back-btn cursor-active" id="back-btn-pic"><i class="iconfont icon-back"></i></a>图片存储</h1>
+			</header>
+			
+			<div class="content" style="bottom: 3.2rem;">
+
+				<div id="pic_list_dom">
+					<div class="list-block pic-row">
+						<div class="result">
+							<div class="result-item">
+								<p><span id="csPcapacity">33.68</span> TB</p>
+								<p>存储容量</p>
+							</div>
+							<div class="result-item">
+								<p><span id="csPfiles">100</span> 万张</p>
+								<p>文件</p>
+							</div>
+							<div class="border-item" style="width:50%"></div>
+						</div>
+						<ul>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">平均大小(Kb)</div>
+									<div class="item-after"><input type="number" value="512" id="csPsize"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">卡口个数</div>
+									<div class="item-after"><input type="number" value="100" id="pbayonetCount"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">车道/卡口</div>
+									<div class="item-after"><input type="number" value="2" id="pdiveway"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">日车流量</div>
+									<div class="item-after"><input type="number" value="5000" id="csPvstream"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">保存天数</div>
+									<div class="item-after"><input type="number" value="365" id="picDays"></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="footbtn">
+				<div id="pbtn-group-add">
+					<!-- <p class="btn-white cursor-active" id="btn-addAgain-pic">继续添加</p> -->
+					<p class="btn-red cursor-active-red" id="btn-add-pic">完成</p>
+				</div>
+				<div id="pbtn-group-edit" class="two-btn">
+					<p class="btn-red cursor-active-red" id="btn-delete-pic">删除</p>
+					<p class="btn-white cursor-active" id="btn-edited-pic">完成修改</p>
+				</div>
+			</div>
+		</div>
+		<!-- 添加图片存储页 - end -->
+
+		<!-- 云计算 - start -->
+		<div class="page page-current page-toR-100" id="page_calc">
+			<header class="bar bar-nav">
+				<h1 class="title"><a class="back-btn cursor-active" id="back-btn-calc"><i class="iconfont icon-back"></i></a>云计算</h1>
+			</header>
+			
+			<div class="content" style="bottom: 3.2rem;">
+
+				<div id="calc_list_dom">
+					<div class="list-block calc-row">
+						<div class="result">
+							<div class="result-item" style="width:100%; padding-left: 1.5rem">
+								<p><span id="gross">0</span> 亿</p>
+								<p>数据总量</p>
+							</div>
+						</div>
+						<ul>
+							<li class="item-content item-link" style="margin-bottom: .5rem;">
+								<div class="item-inner" style="border: none;">
+									<div class="item-title">数据类型</div>
+									<div class="item-after"><input type="text" value="车辆" id="calDataType"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">日数据量(万)</div>
+									<div class="item-after"><input type="number" value="1000" id="ccFcountEd"></div>
+								</div>
+							</li>
+							<li class="item-content">
+								<div class="item-inner">
+									<div class="item-title">保存天数</div>
+									<div class="item-after"><input type="number" value="30" id="cStoreDays"></div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="footbtn">
+				<div id="cbtn-group-add">
+					<!-- <p class="btn-white cursor-active" id="btn-addAgain-calc">继续添加</p> -->
+					<p class="btn-red cursor-active-red" id="btn-add-calc">完成</p>
+				</div>
+				<div id="cbtn-group-edit" class="two-btn">
+					<p class="btn-red cursor-active-red" id="btn-delete-calc">删除</p>
+					<p class="btn-white cursor-active" id="btn-edited-calc">完成修改</p>
+				</div>
+			</div>
+		</div>
+		<!-- 云计算 - end -->
+
+		<!-- 配置页- start -->
+		<div class="page page-current page-toR-100" id="page_config">
+			<header class="bar bar-nav">
+				<h1 class="title"><a class="back-btn back cursor-active"><i class="iconfont icon-back"></i></a>配单工具</h1>
+			</header>
+			
+			<div class="content" style="bottom: 3.2rem; top: 2.7rem;">
+				<div class="card-title card-title-sm">
+					<span>项目名称</span><span style="margin-left: 1.5rem;" id="projectNameConfig"></span><i></i>
+				</div>
+
+				<div class="list-block">
+					<ul>
+						<li class="item-content" style="margin-bottom: .5rem;">
+							<div class="item-inner" style="border: none;">
+								<div class="item-title">热设备容量(%)</div>
+								<div class="item-after"><input type="number" value="5" id="thermalCapacity"></div>
+							</div>
+						</li>
+						<li class="item-content radio-content">
+							<p>云存储节点数</p>
+							<div id="disc">
+								<span>24</span>
+								<span class="radio-checked">36</span>
+								<span>48</span>
+							</div>
+						</li>
+						<li class="item-content radio-content">
+							<p>磁盘容量(Tb)</p>
+							<div id="diskCapacity">
+								<span>1</span>
+								<span>2</span>
+								<span>3</span>
+								<span class="radio-checked">4</span>
+								<span>6</span>
+							</div>
+						</li>
+						<li class="item-content">
+							<div class="item-inner">
+								<div class="item-title">容忍故障节点数</div>
+								<div class="item-after"><input type="number" value="1" id="bearBadNodesCount"></div>
+							</div>
+						</li>
+						<li class="item-content item-link" style="margin-bottom: .5rem;">
+							<div class="item-inner" style="border: none;">
+								<div class="item-title">网络环境</div>
+								<div class="item-after"><input type="text" value="千兆" id="netEnvironment"></div>
+							</div>
+						</li>
+						<li class="item-content">
+							<div class="item-inner">
+								<div class="item-title">HTTP节点冗余</div>
+								<label class="label-switch">
+									<input type="checkbox" value="open" id="nodeRedundant">
+									<div class="checkbox"></div>
+								</label>
+							</div>
+						</li>
+						<li class="item-content">
+							<div class="item-inner">
+								<div class="item-title">包含萃取业务</div>
+								<label class="label-switch">
+									<input type="checkbox" id="serviceGet">
+									<div class="checkbox"></div>
+								</label>
+							</div>
+						</li>
+						<li class="item-content">
+							<div class="item-inner">
+								<div class="item-title">碰撞业务</div>
+								<label class="label-switch">
+									<input type="checkbox" id="collideOrNot">
+									<div class="checkbox"></div>
+								</label>
+							</div>
+						</li>
+						<li class="item-content">
+							<div class="item-inner">
+								<div class="item-title">上视频云架构</div>
+								<label class="label-switch">
+									<input type="checkbox" id="videoCloudOrNot">
+									<div class="checkbox"></div>
+								</label>
+							</div>
+						</li>
+					</ul>
+
+				</div>
+
+			</div>
+			<div>
+				<div class="footbtn btn-add">
+					<p id="btn-back-config">上一步</p>
+				</div>
+				<div class="footbtn btn-ok">
+					<p class="btn-red" id="btn-build-config">生成配单</p>
+				</div>
+			</div>
+		</div>
+		<!-- 配置页 - end -->
+
+		<!-- 生成页 - start -->
+		<div class="page page-current page-toR-100" id="page_build">
+			<header class="bar bar-nav">
+				<h1 class="title"><a class="back-btn back cursor-active"><i class="iconfont icon-back"></i></a>配单工具</h1>
+			</header>
+			
+			<div class="content" style="bottom: 3.2rem; top: 2rem;">
+				<div id="buildPicDom" style="padding-top: .5rem">
+					<div class="card-title card-title-sm" style="text-align: center; margin-top: .5rem;">
+						<span id="projectNameBuild"></span><i></i>
+					</div>
+
+					<div class="build-item" id="couldStoragePannel">
+						<p>云存储系统</p>
+						<div class="item-container">
+							<div id="storeSevice">
+								<h3>云存储元数据服务器<span><span id="baseNodes">2</span>台</span></h3>
+								<p><span>物料号</span><span id="nodeMaterial">1.0.01.26.10080</span></p>
+								<p><span>参数说明</span><span>元数据服务器</span></p>
+								<p><span>产品型号</span><span id="nodeType">CSS5100X-L</span></p>
+							</div>
+							<div id="storeNode">
+								<h3>云存储数据存储节点<span><span id="nodes">111</span>台</span></h3>
+								<p><span>物料号</span><span id="storeNodeMaterial">1.0.01.26.10119</span></p>
+								<p><span>参数说明</span><span><span id="tdisc">36</span>盘位</span></p>
+								<p><span>产品型号</span><span id="storeNodeType">DH-CSS7148S-VR</span></p>
+							</div>
+							<div id="video-col">
+								<h3>视频云存储系统软件<span><span id="videoNodes">1</span>套</span></h3>
+								<p><span>物料号</span><span id="storeNodeMaterial">1.0.01.26.10087</span></p>
+								<p><span>参数说明</span><span>云存储系统软件</span></p>
+								<p><span>产品型号</span><span id="videoType">DH-CSS-V</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="build-item" id="buildDisc">
+						<p>硬盘</p>
+						<div class="item-container">
+							<div>
+								<h3>硬盘<span><span id="totDisk">1248</span>块</span></h3>
+								<p><span>物料号</span><span id="diskMaterial">扩容项目中48盘位不支持6TB硬盘</span></p>
+								<p><span>参数说明</span><span id="diskC">扩容项目中48盘位不支持6TB硬盘</span></p>
+								<p><span>产品型号</span><span id="diskType"></span></p>
+							</div>
+						</div>
+					</div>
+					<div class="build-item" id="messageCat">
+						<p>短信猫</p>
+						<div class="item-container">
+							<div>
+								<h3>短信猫 WAVECOM M1203A 1<span><span id="mailCat">1</span>个</span></h3>
+								<p><span>物料号</span><span id="nodeMaterial">1.5.01.24.00365</span></p>
+								<p><span>参数说明</span><span>告警信息推送设备，需配3G卡 （GSM）</span></p>
+								<p><span>产品型号</span><span id="CSS9064X-800S">金笛m1203，单口USB型号</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="build-item" id="buildHttp">
+						<p>HTTP网关</p>
+						<div class="item-container">
+							<div>
+								<h3>云存储HTTP网关节<span><span id="httpGateway">2</span>台</span></h3>
+								<p><span>物料号</span><span>1.0.01.26.10075</span></p>
+								<p><span>参数说明</span><span>点针对于卡口图片查询下载提供HTTP服务，
+								显著提高图片查询下载能力。1.实际卡口图片数量在2亿（加上抠图按系数2.2倍计算是4.4亿）以下可以不配置
+								 2.实际卡口图片数量在2亿（加上抠图按系数2.2倍计算是4.4亿）以上默认配2台HTTP网关，
+								 因为DSS平台压力比较大需要提供额外的HTTP服务。</span></p>
+								<p><span>产品型号</span><span>DH-CSS5000G-M</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="build-item" id="buildNetPort">
+						<p>网口需求	</p>
+						<div class="item-container">
+							<div id="storeEportDiv">
+								<h3>存储网口<span><span id="storeEport">28</span>口</span></h3>
+								<p><span>物料号</span><span></span></p>
+								<p><span>参数说明</span><span>端口聚合，需创建存储VLAN</span></p>
+								<p><span>产品型号</span><span>千兆口接入业务网络</span></p>
+							</div>
+							<div id="dnetDiv">
+								<h3>双光口万兆网卡<span><span id="dnet">0</span>块</span></h3>
+								<p><span>物料号</span><span id="dNetMaterial"></span></p>
+								<p><span>参数说明</span><span id="dnetParame">元数据服务器配件</span></p>
+								<p><span>产品型号</span><span id="dnetRemark">Broadcom 57810S/Intel X520</span></p>
+							</div>
+							<div id="serviceEportDiv">
+								<h3>业务网口<span><span id="serviceEport">0</span>口</span></h3>
+								<p><span>物料号</span><span></span></p>
+								<p><span>参数说明</span><span>端口聚合，需创建存储VLAN</span></p>
+								<p><span>产品型号</span><span>千兆口接入业务网络</span></p>
+							</div>
+							<div id="hnetDiv">
+								<h3>心跳网口<span><span id="heartEport">0</span>口</span></h3>
+								<p><span>物料号</span><span></span></p>
+								<p><span>参数说明</span><span>2台元数据情况下，心跳网口2台彼此互联不占用交换机网口，超过2台情况下心跳网口全部接入交换机，需创建心跳VLAN</span></p>
+								<p><span>产品型号</span><span>千兆网口</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="build-item" id="newPlatform">
+						<p>新平台</p>
+						<div class="item-container">
+							<div>
+								<h3>基于视频云架构行业平台<span><span>1</span>台</span></h3>
+								<p><span>物料号</span><span></span></p>
+								<p><span>参数说明</span><span>具体请联系平台相关负责人：袁旭昌</span></p>
+								<p><span>产品型号</span><span>请配置基于视频云架构行业平台，例如公安行业新的C9100等等</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="build-item" id="cloudCalc">
+						<p>云计算系统</p>
+						<div class="item-container">
+							<div>
+								<h3>云计算一体机-数据搜索服务<span><span id="systemServers">1</span>台</span></h3>
+								<p><span>物料号</span><span id="ccSmodelMaterial">1.0.01.26.10027</span></p>
+								<p><span>参数说明</span><span>8100系列需要配Oracle数据库</span></p>
+								<p><span>产品型号</span><span id="ccSmodelType">DH-CSS7100X-HS</span></p>
+							</div>
+						</div>
+					</div>
+					<div class="build-item" id="uniteOperate">
+						<p>统一运维系统</p>
+						<div class="item-container">
+							<div>
+								<h3>云计算一体机-统一运维<span><span>1</span>台</span></h3>
+								<p><span>物料号</span><span>1.0.01.26.10155</span></p>
+								<p><span>参数说明</span><span>选配</span></p>
+								<p><span>产品型号</span><span>DH-CCS7016X-LO</span></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="footbtn btn-ok" style="width: 100%">
+				<p class="btn-red" id="btn-pic-build">生成图片</p>
+			</div>
+
+			<div class="download-pic">
+				<img src="" id="sava_img">
+			</div>
+
+			<div class="download-close">关闭</div>
+		</div>
+		<!-- 生成页 - end -->
+
+		<!-- 对话框 -->
+		<div class="mask modal-container" id="modalMask">
+			<div>
+				<div class="modal-msg">
+					<p id="modalMsg">确定要退出吗？</p>
+				</div>
+				<div class="modal-btn">
+					<p class="cursor-active" id="modalCancel" style="color: #666">取消</p>
+					<p class="cursor-active" id="modalOk" style="color: #0894ec">确定</p>
+					<p class="cursor-active" id="modalOkDelete" style="color: #f30">删除</p>
+				</div>
+			</div>
+		</div>
+		<!-- 提示框 -->
+		<div class="info-container" id="info">
+			<div id="infoMsg">未知错误</div>
+		</div>
+	</div> 
+	<!-- <script src="<%=BASE_PATH %>/JS/support.js"></script>-->
+</body>
+<script>
+
+	if(('onhashchange' in window) && ((typeof document.documentMode === 'undefined') || document.documentMode==8)) {
+		window.onhashchange = function () {
+			if(location.hash=="#Video") {
+				//Page.back();
+			}
+		}
+	}
+
+	var Page = {
+		pageStack: [$("#page_result")],       // 存储页面的堆栈
+		
+		pageVideo: $("#page_video"),
+		pagePic: $("#page_pic"),
+		pageCalc: $("#page_calc"),
+		pageResult: $("#page_result"),
+		pageConfig: $("#page_config"),
+		pageBuild: $("#page_build"),
+
+		back: function () {
+			var currentPage = Page.pageStack.pop();
+			var lastPage = Page.pageStack[Page.pageStack.length - 1];
+			lastPage.removeClass("page-toL-50")     // 上一页从左边复位
+			currentPage.addClass("page-toR-100");   // 当前页向右移除屏幕
+		},
+		enter: function (targetPage) {
+			var currentPage = Page.pageStack[Page.pageStack.length - 1];
+			Page.pageStack.push(targetPage);
+			targetPage.removeClass("page-toR-100");   // 目标页从右边进来
+			currentPage.addClass("page-toL-50");      // 当前页向左移除屏幕
+		},
+		init: function () {
+			$(".back").click(function (e) {
+				e.stopPropagation();
+				Page.back();
+			})
+		}
+	}
+	Page.init();
+
+	/**
+	 * @var Object Dom *3
+	 * @desc 当前操作的一行DOM
+	 */
+	var currentVideoDom = "";
+	var currentPicDom = "";
+	var currentCalcDom = "";
+
+	var Picker = {
+		init: function () {
+			// 云计算-数据类型【插件：light7.js】
+			$("#calDataType").picker({
+				toolbarTemplate: '<header class="bar bar-nav" style="border: none; box-shadow: 0 -3px 8px #ccc;">' 
+					+ '<button class="button button-link pull-right close-picker">确定</button>'
+					+ '<h1 class="title">数据类型</h1>'
+					+ '</header>',
+				cols: [
+					{
+						textAlign: 'center',
+						values: ['过车','MAC','Rfid','人脸','其他']
+					}
+				],
+				toolbar: true,
+				//rotateEffect: true,  // 开启炫酷的3d效果
+			})
+			// 配单设置-网络环境【插件：light7.js】
+			$("#netEnvironment").picker({
+				toolbarTemplate: '<header class="bar bar-nav" style="border: none; box-shadow: 0 -3px 8px #ccc;">' 
+					+ '<button class="button button-link pull-right close-picker">确定</button>'
+					+ '<h1 class="title">网络环境</h1>'
+					+ '</header>',
+				cols: [
+					{
+						textAlign: 'center',
+						values: ['千兆','万兆']
+					}
+				],
+				toolbar: true,
+			})
+			// 绑定项目名称
+			$("#projectName").on('change', function () {
+				var projectName = $("#projectName").val();
+				$("#projectNameResult").text( projectName );
+				$("#projectNameConfig").text( projectName );
+				$("#projectNameBuild").text( projectName );
+			})
+			// 生成图片【插件：html2canvas.js】
+			var dom = document.querySelector("#buildPicDom");
+			$("#btn-pic-build").click(function () {	
+				$.showIndicator()
+				html2canvas(dom,{
+					backgroundColor: "#efeff4",
+					useCORS:true,
+				}).then(canvas => {
+					$.hideIndicator()
+					var img = document.getElementById("sava_img");
+					img.src = canvas.toDataURL("image/png");
+					$(".download-pic").show();
+					$(".download-close").show();
+					result.infoShow("长按或者鼠标右键保存图片", 2000)
+				})
+			})
+			$(".download-close").click(function () {
+				$(".download-pic").hide();
+				$(this).hide();
+			})
+		}
+	}
+	Picker.init();
+	/**
+	 * @class
+	 * @desc 公共类 包含 对话框|提示框|计算每一行数据|计算所有行汇总数据|生成配单请求
+	 */
+	function Common () {
+		this.errMsg = "";
+		this.$modal = $("#modalMask");
+		this.$modalDialog = $("#modalMask>div");
+		this.$modalMsg = $("#modalMsg");
+		this.$modalOk = $("#modalOk");
+		this.$modalOkDelete = $("#modalOkDelete");
+		this.$info = $("#info");
+		this.$infoMsg = $("#infoMsg")
+		var _this = this;
+		// 对话框取消
+		$("#modalCancel").click(function () {
+			_this.modalHide();
+		})
+		this.modalHide = function () {
+			this.$modal.removeClass("visible-show");
+			this.$modalDialog.css("transform", "scale(1.3)")
+		}
+		// 弹出对话框 params: 返回/删除模式, 信息, 按钮方法
+		this.modalShow = function (type, msg, fn) {
+			this.$modal.addClass("visible-show");
+			this.$modalMsg.text(msg);
+			this.$modalDialog.css("transform", "scale(1)");
+			if(type == "BACK") {
+				this.$modalOkDelete.hide();
+				this.$modalOk.show();
+				this.$modalOk.unbind();
+				this.$modalOk.click(function () {
+					fn ? fn() : console.warn("no FuncOk");
+					_this.modalHide();
+				});
+			} else if (type == "DELETE") {
+				this.$modalOk.hide();
+				this.$modalOkDelete.show();
+				this.$modalOkDelete.unbind();
+				this.$modalOkDelete.click(function () {
+					fn ? fn() : console.warn("no FuncDel");
+					_this.modalHide();
+				});
+			}
+		}
+		// 提示框
+		this.infoShow = function (msg, timer) {
+			this.$infoMsg.text(msg);
+			this.$info.addClass("info-show");
+			var delay = timer || 1000;
+			setTimeout(function () {
+				_this.$info.removeClass("info-show");
+			}, delay)
+		}
+		/**
+ 		 * @method *3
+ 		 * @param {Number} ...
+ 		 * @returns {Object|Number}
+ 		 * @desc 计算每一行的汇总数量
+		 */
+		this.computeVideo = function (stream, count, day, cbr) {
+			var product = stream * count * day * cbr;
+			if( !product && product !== 0 ) return
+			return {
+				csVcapacity: product * 0.0103,
+				csVmbps: stream * count
+			}
+		}
+		this.computePic = function (size, count, way, stream, day) {
+			var product = size * count * way * stream * day;
+			if( !product && product !== 0 ) return
+			return {
+				csPcapacity: product / 894784853,
+				csPfiles: count * way * stream * day * 2.2 / 10000
+			}
+		}
+		this.computeCalc = function (count, day) {
+			var product = count *  day;
+			if( !product && product !== 0 ) return
+			return product / 10000;
+		}
+		/**
+ 		 * @method *3
+ 		 * @desc 计算所有行的汇总数量结果，写入总和
+		 */
+		this.orderVideo = function () {
+			var $videoList = $("#videoRow .msg-row");
+			var vTotcapacity = 0;
+			var vTotFiles = 0
+			var vTotAmount = 0
+			for(var i = 0; i < $videoList.length; i++) {
+				var rowList = $($videoList[i]).find('h1');
+				var sumObj = this.computeVideo( $(rowList[0]).text(), $(rowList[1]).text(), $(rowList[2]).text(), $(rowList[3]).text() );
+				vTotcapacity += sumObj.csVcapacity;
+				vTotFiles += $(rowList[1]).text() * $(rowList[2]).text() * 100;
+				vTotAmount += +$(rowList[1]).text();
+			}
+			$("#vTotcapacity").text(vTotcapacity.toFixed(2));
+			$("#vTotFiles").text(vTotFiles);
+			$("#vTotAmount").text(vTotAmount);
+		}
+		this.orderPic = function () {
+			var $picList = $("#picRow .msg-row");
+			var pTotcapacity = 0;
+			var pTotfiles = 0;
+			var ptotBayonetCount = 0;
+			for(var i = 0; i < $picList.length; i++) {
+				var rowList = $($picList[i]).find('h1');
+				var sumObj = this.computePic( $(rowList[0]).text(), $(rowList[1]).text(), $(rowList[2]).text(), $(rowList[3]).text(), $(rowList[4]).text() );
+				pTotcapacity += sumObj.csPcapacity;
+				pTotfiles += sumObj.csPfiles;
+				ptotBayonetCount += $(rowList[1]).text() * 1;
+			}
+			$("#pTotcapacity").text(pTotcapacity.toFixed(2));
+			$("#pTotfiles").text(pTotfiles.toFixed(2));
+			$("#ptotBayonetCount").text(ptotBayonetCount);
+		}
+		this.orderCalc = function () {
+			var $calcList = $("#calcRow .msg-row");	
+			var totGross = 0;
+			for(var i = 0; i < $calcList.length; i++ ) {
+				var rowList = $($calcList[i]).find("h1");
+				totGross += this.computeCalc( $(rowList[1]).text(), $(rowList[2]).text() );
+			}
+			$("#totGross").text(totGross.toFixed(4));
+		}
+		/**
+ 		 * @method 
+ 		 * @type {http-ajax}
+ 		 * @desc 请求配单结果
+		 */
+		this.buildList = function () {
+			var _this = this;
+			var params = {
+				"vTotcapacity":     $("#vTotcapacity").text(),
+				"vTotFiles":        $("#vTotFiles").text(),
+				"vTotAmount":       $("#vTotAmount").text(),
+				"pTotfiles":        $("#pTotfiles").text(),
+				"pTotcapacity":     $("#pTotcapacity").text(),
+				"pTotBayonetCount": $("#ptotBayonetCount").text(),
+				"totGross":         $("#totGross").text(),
+				"ccSmodel":         $("#totGross").text() > 20 ? "DH-CSS7100X-HS-50Y" : "DH-CSS7100X-HS",
+				"thermalCapacity":  ($("#thermalCapacity").val() / 100).toFixed(2),
+				"diskCapacity":     this.diskCapacity,
+				"disc":             this.disc,
+				"bearBadNodesCount": $('#bearBadNodesCount').val(),
+				"videoCloudOrNot":  this.videoCloudOrNot,
+				"netEnvironment":   $('#netEnvironment').val(),
+				// "nodeRedundant":    this.nodeRedundant, 
+				"serviceGet":       this.serviceGet,
+				"collideOrNot":     this.collideOrNot,
+				"projectName":      $("#projectName").val(),
+			};
+			$.ajax({
+				type:'POST',
+				url: base_path + '/simpleList',
+				contentType: "application/json",
+				dataType: 'json',
+				data: JSON.stringify(params),
+				success:function(result){
+					$.hidePreloader()
+					if(result.result != 200) _this.infoShow("未知请求错误", 2000);
+					Page.enter(Page.pageBuild);
+					var e = result.data;
+					// var result = {
+					// 	"result":200,
+					// 	"message":"成功",
+					// 	"data":{
+					// 		"hnet":null,
+					// 		"fibreNet":null,
+					// 		"dahuaPlatformCount":1.0,
+					// 		"dahuaVideoCloudCount":1.0,
+					// 		"dahuaVideoCloudMaterial":"1.0.01.26.10087",
+					// 		"dahuaVideoCloudType":"DH-CSS-V",
+					// 		"systemServers":null,
+					// 		"type":null,
+					// 		"material":null,
+					// 		"diskCapacity":4.0,
+					// 		"totDisk":216.0,
+					// 		"storeEport":28.0,
+					// 		"serviceEport":12.0,
+					// 		"dnet":0.0,
+					// 		"storeNode":6.0,
+					// 		"baseNodes":2.0,
+					// 		"tdisc":36.0,
+					// 		"nodeType":"CSS9064X-800S",
+					// 		"storeNodeType":"DH-CSS7136S-ERD",
+					// 		"httpGateway":0.0,
+					// 		"nodeMaterial":"1.0.01.26.10012",
+					// 		"storeNodeMaterial":"1.0.01.26.10023",
+					// 		"diskMaterial":"1.2.02.18.10114",
+					// 		"netEnvironment":"千兆",
+					// 		"dNetMaterial":"1.2.02.17.10121"
+					// 	}
+					// }
+					// var e = JSON.parse(result.data);
+
+					$('#baseNodes').text(e.baseNodes);
+					$('#nodeMaterial').text(e.nodeMaterial);
+					$("#nodeType").text(e.nodeType);
+					$("#nodeMaterial").text(e.nodeMaterial);
+					$("#dnet").text(e.dnet || "0");
+					$("#nodes").text(e.storeNode);
+					$("#tdisc").text(e.tdisc);
+					$("#storeNodeType").text(e.storeNodeType);
+					$("#storeNodeMaterial").text(e.storeNodeMaterial);
+					$("#totDisk").text(e.totDisk);
+					$("#diskCapacity").text(e.diskCapacity);
+					//$("#diskType").text(e.diskType);  //
+					$("#diskMaterial").text(e.diskMaterial);
+					$("#httpGateway").text(e.httpGateway);
+					$("#serviceEport").text(e.serviceEport);
+					$("#heartEport").text(e.hnet || "0"); 
+					$("#storeEport").text(e.storeEport);
+					$("#dNetMaterial").text(e.dNetMaterial);
+					$("#systemServers").text(e.systemServers);
+					$("#diskType").text(e.tdisc);
+
+					// 隐藏数量为0的小项
+					+e.baseNodes ? $("#storeSevice").show() : $("#storeSevice").hide();
+					+e.storeNode ? $("#storeNode").show() : $("#storeNode").hide();
+					+e.totDisk ? $("#buildDisc").show() : $("#buildDisc").hide();
+					+e.httpGateway ? $("#buildHttp").show() : $("#buildHttp").hide();
+					+e.storeEport ? $("#storeEportDiv").show() : $("#storeEportDiv").hide();
+					+e.dnet ? $("#dnetDiv").show() : $("#dnetDiv").hide();
+					+e.serviceEport ? $("#serviceEportDiv").show() : $("#serviceEportDiv").hide();
+					+e.hnet ? $("#hnetDiv").show() : $("#hnetDiv").hide();
+					+e.systemServers ? $("#cloudCalc").show() : $("#cloudCalc").hide();
+
+					// 隐藏小项数量都为0的大项
+					(_this.videoCloudOrNot || (+e.baseNodes + +e.storeNode)) ? $("#couldStoragePannel").show() : $("#couldStoragePannel").hide();
+					(+e.storeEport + +e.dnet + +e.serviceEport + +e.hnet) ? $("#buildNetPort").show() : $("#buildNetPort").hide();
+					// 是否上视频云
+					if(!_this.videoCloudOrNot) {
+						$('#video-col').hide();
+						$('#newPlatform').hide();
+					} else {
+						$('#video-col').show();
+						$('#newPlatform').show();
+					}
+					// 是否有碰撞业务
+					if(!_this.collideOrNot && $("#totGross").text() < 20) {
+						$("#cloudCalc").hide();
+					} else {
+						$("#cloudCalc").show();
+					}
+				},error:function(){
+					$.hidePreloader()
+					_this.infoShow("未知错误", 2000);
+					$.hidePreloader()
+					Page.enter(Page.pageBuild);
+					var result = {
+						"result":200,
+						"message":"成功",
+						"data":{
+							"hnet":null,
+							"fibreNet":null,
+							"dahuaPlatformCount":1.0,
+							"dahuaVideoCloudCount":1.0,
+							"dahuaVideoCloudMaterial":"1.0.01.26.10087",
+							"dahuaVideoCloudType":"DH-CSS-V",
+							"systemServers":null,
+							"type":null,
+							"material":null,
+							"diskCapacity":4.0,
+							"totDisk":216.0,
+							"storeEport":28.0,
+							"serviceEport":12.0,
+							"dnet":0.0,
+							"storeNode":6.0,
+							"baseNodes":2.0,
+							"tdisc":36.0,
+							"nodeType":"CSS9064X-800S",
+							"storeNodeType":"DH-CSS7136S-ERD",
+							"httpGateway":0.0,
+							"nodeMaterial":"1.0.01.26.10012",
+							"storeNodeMaterial":"1.0.01.26.10023",
+							"diskMaterial":"1.2.02.18.10114",
+							"netEnvironment":"千兆",
+							"dNetMaterial":"1.2.02.17.10121"
+						}
+					}
+					var e = JSON.parse(result.data);
+
+					$('#baseNodes').text(e.baseNodes);
+					$('#nodeMaterial').text(e.nodeMaterial);
+					$("#nodeType").text(e.nodeType);
+					$("#nodeMaterial").text(e.nodeMaterial);
+					$("#dnet").text(e.dnet || "0");
+					$("#nodes").text(e.storeNode);
+					$("#tdisc").text(e.tdisc);
+					$("#storeNodeType").text(e.storeNodeType);
+					$("#storeNodeMaterial").text(e.storeNodeMaterial);
+					$("#totDisk").text(e.totDisk);
+					$("#diskCapacity").text(e.diskCapacity);
+					//$("#diskType").text(e.diskType);  //
+					$("#diskMaterial").text(e.diskMaterial);
+					$("#httpGateway").text(e.httpGateway);
+					$("#serviceEport").text(e.serviceEport);
+					$("#heartEport").text(e.hnet || "0"); 
+					$("#storeEport").text(e.storeEport);
+					$("#dNetMaterial").text(e.dNetMaterial);
+					$("#systemServers").text(e.systemServers);
+					$("#diskType").text(e.tdisc);
+
+					// 隐藏数量为0的小项
+					+e.baseNodes ? $("#storeSevice").show() : $("#storeSevice").hide();
+					+e.storeNode ? $("#storeNode").show() : $("#storeNode").hide();
+					+e.totDisk ? $("#buildDisc").show() : $("#buildDisc").hide();
+					+e.httpGateway ? $("#buildHttp").show() : $("#buildHttp").hide();
+					+e.storeEport ? $("#storeEportDiv").show() : $("#storeEportDiv").hide();
+					+e.dnet ? $("#dnetDiv").show() : $("#dnetDiv").hide();
+					+e.serviceEport ? $("#serviceEportDiv").show() : $("#serviceEportDiv").hide();
+					+e.hnet ? $("#hnetDiv").show() : $("#hnetDiv").hide();
+					+e.systemServers ? $("#cloudCalc").show() : $("#cloudCalc").hide();
+
+					// 隐藏小项数量都为0的大项
+					(_this.videoCloudOrNot || (+e.baseNodes + +e.storeNode)) ? $("#couldStoragePannel").show() : $("#couldStoragePannel").hide();
+					(+e.storeEport + +e.dnet + +e.serviceEport + +e.hnet) ? $("#buildNetPort").show() : $("#buildNetPort").hide();
+					// 是否上视频云
+					if(!_this.videoCloudOrNot) {
+						$('#video-col').hide();
+						$('#newPlatform').hide();
+					} else {
+						$('#video-col').show();
+						$('#newPlatform').show();
+					}
+					// 是否有碰撞业务
+					if(!_this.collideOrNot && $("#totGross").text() < 20) {
+						$("#cloudCalc").hide();
+					} else {
+						$("#cloudCalc").show();
+					}
+				}
+			});
+		}
+	}
+	/**
+	 * @class
+	 * @desc 首页 切换三种配单展示结果
+	 */
+	function Result () {
+		this.$sectionV = $("#sectionV");
+		this.$sectionP = $("#sectionP");
+		this.$sectionC = $("#sectionC");
+		this.$iconV = $(".icon-video");
+		this.$iconP = $(".icon-pic");
+		this.$iconC = $(".icon-calc");
+		this.$tabBar = $(".tab-bar");
+
+		this.bindResultEvents = function () {
+			var _this = this;
+			$("#closeAll").click(function() {
+				window.location.href = base_path+"/GetArticleSummary";
+			})
+			$("#btn-next-result").click(function () {
+				Page.enter(Page.pageConfig);
+			})
+			$("#switchToV").click(function() {
+				// $(this).removeClass("filter-noab").siblings().addClass("filter-noab");
+				_this.$iconV.addClass('icon-video-active')
+				_this.$iconP.removeClass('icon-pic-active')
+				_this.$iconC.removeClass('icon-calc-active')
+				_this.$sectionV.addClass("visible-show");
+				_this.$sectionP.removeClass("visible-show");
+				_this.$sectionC.removeClass("visible-show");
+			})
+			$("#switchToP").click(function() {
+				// $(this).removeClass("filter-noab").siblings().addClass("filter-noab");
+				_this.$iconV.removeClass('icon-video-active')
+				_this.$iconP.addClass('icon-pic-active')
+				_this.$iconC.removeClass('icon-calc-active')
+				_this.$sectionV.removeClass("visible-show");
+				_this.$sectionP.addClass("visible-show");
+				_this.$sectionC.removeClass("visible-show");
+			})
+			$("#switchToC").click(function() {
+				// $(this).removeClass("filter-noab").siblings().addClass("filter-noab");
+				_this.$iconV.removeClass('icon-video-active')
+				_this.$iconP.removeClass('icon-pic-active')
+				_this.$iconC.addClass('icon-calc-active')
+				_this.$sectionV.removeClass("visible-show");
+				_this.$sectionP.removeClass("visible-show");
+				_this.$sectionC.addClass("visible-show");
+			})
+		}
+	}
+
+	Result.prototype = new Common();
+	var result = new Result();
+	result.bindResultEvents();
+	/**
+	 * @class
+	 * @desc 视频存储配单 增|继续增|删|改
+	 */
+	function Video () {
+		this.$vDom = $("#videoRow");
+		this.btnGroupEdit = $("#vbtn-group-edit");
+		this.btnGroupAdd = $("#vbtn-group-add");
+
+		this.$csVstream = $("#csVstream");
+		this.$csVcamount = $("#csVcamount");
+		this.$storeDays = $("#storeDays");
+		this.$csVcbr = $("#csVcbr");
+
+		this.$csVcapacity = $("#csVcapacity");
+		this.$csVmbps = $("#csVmbps");
+
+		this.id = 0;
+		this.edited = false;
+		this.template = '<div class="msg-row cursor-active" id="video$id$">'
+						+	'<div class="msg-item">'
+						+		'<h1>$csVstream$</h1>'
+						+		'<p>Mbps码流</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$csVcamount$</h1>'
+						+		'<p>路数</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$storeDays$</h1>'
+						+		'<p>保存天数</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$csVcbr$</h1>'
+						+		'<p>CRB系数</p>'
+						+	'</div>'
+						+ '</div>';
+		var _this = this;
+		this.setRowResult = function (a,b,c,d) {
+			var obj = _this.computeVideo(a,b,c,d);
+			_this.$csVcapacity.text((obj.csVcapacity).toFixed(2))
+			_this.$csVmbps.text((obj.csVmbps).toFixed(2))
+		}
+		// 绑定从主页进入video页的两种方法
+		this.bindEnterFromResult = function () {
+			// 新增视频存储
+			$(".addVideoBtn").click(function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				_this.btnGroupEdit.hide();
+				_this.btnGroupAdd.css("display", "flex");
+				// 初始化input
+				_this.$csVstream.val(4)
+				_this.$csVcamount.val(0)
+				_this.$storeDays.val(30)
+				_this.$csVcbr.val(1.1)
+				_this.$csVcapacity.text(0)
+				_this.$csVmbps.text(0)
+				Page.enter(Page.pageVideo);
+			})
+			// 编辑视频每一行
+			$("#videoRow").on("click", ".msg-row", function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				_this.btnGroupAdd.hide();
+				_this.btnGroupEdit.css("display", "flex");
+				currentVideoDom = $(this);
+				// 使用当前点击dom更新input
+				var domList = currentVideoDom.find("h1");
+				_this.$csVstream.val($(domList[0]).text());
+				_this.$csVcamount.val($(domList[1]).text());
+				_this.$storeDays.val($(domList[2]).text());
+				_this.$csVcbr.val($(domList[3]).text());
+				_this.setRowResult($(domList[0]).text(),$(domList[1]).text(),$(domList[2]).text(),$(domList[3]).text())
+				Page.enter(Page.pageVideo); 
+			})
+		}
+		// 将编辑后内容添加入result页
+		this.add = function (cache) {
+			// 更新Dom
+			var $dom = this.template.replace("$id$", this.id)
+									.replace("$csVstream$", this.$csVstream.val())
+									.replace("$csVcamount$", this.$csVcamount.val())
+									.replace("$storeDays$", this.$storeDays.val())
+									.replace("$csVcbr$", this.$csVcbr.val())
+			this.$vDom.append($dom);      // 作为子节点插入Result页面中
+			this.id++;
+			this.orderVideo();
+		}
+		// 编辑页面返回
+		this.back = function () {
+			Page.back();
+		}
+		// 编辑页执行删除
+		this.delete = function () {
+			currentVideoDom.remove();
+			if($("#videoRow .msg-row").length == 0) {
+				$("#addVRow").show();
+				$("#titleVRow").hide();
+			}
+			Page.back();
+			_this.infoShow("删除成功！");
+			_this.orderVideo();
+		}
+		// 添加点击事件
+		this.bindVideoEvents = function () {
+			this.bindEnterFromResult();
+			// 左上角关闭
+			$("#back-btn-video").click(function (e) {
+				e.stopPropagation();
+				_this.edited ? _this.modalShow('BACK', "确定要退出吗？", _this.back) : Page.back();
+			})
+			// 完成添加按钮
+			$("#btn-add-video").click(function (e) {
+				e.stopPropagation();
+				_this.add();
+				$("#addVRow").hide();
+				$("#titleVRow").css('display', 'flex');
+				Page.back();
+			});
+			// 继续添加
+			$("#btn-addAgain-video").click(function (e) {
+				e.stopPropagation();
+				_this.add();
+				_this.$csVstream.val(4)
+				_this.$csVcamount.val(0)
+				_this.$storeDays.val(30)
+				_this.$csVcbr.val(1.1)
+				$.showIndicator()
+				setTimeout(function () {
+					_this.infoShow("添加成功！");
+					$.hideIndicator();
+				}, 800)
+			})
+			// 删除按钮
+			$("#btn-delete-video").click(function (e) {
+				e.stopPropagation();
+				_this.modalShow('DELETE', "确定要删除吗？", _this.delete);
+			})
+			// 完成编辑
+			$("#btn-edited-video").click(function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				var domList = currentVideoDom.find("h1");
+				// 更新Dom
+				$(domList[0]).text(_this.$csVstream.val());
+				$(domList[1]).text(_this.$csVcamount.val());
+				$(domList[2]).text(_this.$storeDays.val());
+				$(domList[3]).text(_this.$csVcbr.val());
+				Page.back();
+				_this.orderVideo();
+			})
+			// 每次若编辑返回就出现对话框
+			$("#page_video").on("input", 'input[type=number]', function () {
+				_this.edited = true;
+				_this.setRowResult(_this.$csVstream.val(), _this.$csVcamount.val(), _this.$storeDays.val(), _this.$csVcbr.val());
+			})
+		}
+	}
+	Video.prototype = new Result();
+	var video = new Video();
+	video.bindVideoEvents();
+	/**
+	 * @class
+	 * @desc 图片存储配单 增|继续增|删|改
+	 */
+	function Pic () {
+		this.$pDom = $("#picRow");
+		this.btnGroupEdit = $("#pbtn-group-edit");
+		this.btnGroupAdd = $("#pbtn-group-add");
+
+		this.$csPsize = $("#csPsize");
+		this.$pbayonetCount = $("#pbayonetCount");
+		this.$pdiveway = $("#pdiveway");
+		this.$csPvstream = $("#csPvstream");
+		this.$picDays = $("#picDays");
+
+		this.$csPcapacity = $("#csPcapacity");
+		this.$csPfiles = $("#csPfiles");
+
+		this.id = 0;
+		this.edited = false;
+		this.template = '<div class="msg-row cursor-active" id="video$id$">'
+						+	'<div class="msg-item">'
+						+		'<h1>$csPsize$</h1>'
+						+		'<p>平均大小(Kb)</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$pbayonetCount$</h1>'
+						+		'<p>卡口个数</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$pdiveway$</h1>'
+						+		'<p>车道/卡口</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$csPvstream$</h1>'
+						+		'<p>日车流量</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$picDays$</h1>'
+						+		'<p>保存天数</p>'
+						+	'</div>'
+						+ '</div>';
+		var _this = this;
+		this.setRowResult = function (a,b,c,d,e) {
+			var obj = _this.computePic(a,b,c,d,e);
+			_this.$csPcapacity.text((obj.csPcapacity).toFixed(2))
+			_this.$csPfiles.text((obj.csPfiles).toFixed(2))
+		}
+		// 绑定从主页进入pic页的两种方法
+		this.bindEnterFromResult = function () {
+			// 新增图片存储
+			$(".addPicBtn").click(function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				_this.btnGroupEdit.hide();
+				_this.btnGroupAdd.css("display", "flex");
+				// 初始化input
+				_this.$csPsize.val(512)
+				_this.$pbayonetCount.val(0)
+				_this.$pdiveway.val(1)
+				_this.$csPvstream.val(5000)
+				_this.$picDays.val(365)
+				_this.$csPcapacity.text(0)
+				_this.$csPfiles.text(0)
+				Page.enter(Page.pagePic);
+			})
+			// 编辑图片每一行
+			$("#picRow").on("click", ".msg-row", function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				_this.btnGroupAdd.hide();
+				_this.btnGroupEdit.css("display", "flex");
+				currentPicDom = $(this);
+				// 使用当前点击dom更新input
+				var domList = currentPicDom.find("h1");
+				_this.$csPsize.val($(domList[0]).text());
+				_this.$pbayonetCount.val($(domList[1]).text());
+				_this.$pdiveway.val($(domList[2]).text());
+				_this.$csPvstream.val($(domList[3]).text());
+				_this.$picDays.val($(domList[4]).text());
+				_this.setRowResult($(domList[0]).text(),$(domList[1]).text(),$(domList[2]).text(),$(domList[3]).text(),$(domList[4]).text())
+				Page.enter(Page.pagePic);
+			})
+		}
+		// 将编辑后内容添加入result页
+		this.add = function (cache) {
+			// 更新Dom
+			var $dom = this.template.replace("$id$", this.id)
+									.replace("$csPsize$", this.$csPsize.val())
+									.replace("$pbayonetCount$", this.$pbayonetCount.val())
+									.replace("$pdiveway$", this.$pdiveway.val())
+									.replace("$csPvstream$", this.$csPvstream.val())
+									.replace("$picDays$", this.$picDays.val())
+			this.$pDom.append($dom);      // 作为子节点插入Result页面中
+			this.id++;
+			this.orderPic();
+		}
+		// 编辑页面返回
+		this.back = function () {
+			Page.back();
+		}
+		// 编辑页执行删除
+		this.delete = function () {
+			currentPicDom.remove();
+			if($("#picRow .msg-row").length == 0) {
+				$("#addPRow").show();
+				$("#titlePRow").hide();
+			}
+			Page.back();
+			_this.infoShow("删除成功！");
+			_this.orderPic();
+		}
+		// 添加点击事件
+		this.bindPicEvents = function () {
+			this.bindEnterFromResult();
+			// 左上角关闭
+			$("#back-btn-pic").click(function (e) {
+				e.stopPropagation();
+				_this.edited ? _this.modalShow('BACK', "确定要退出吗？", _this.back) : Page.back();
+			})
+			// 完成添加按钮
+			$("#btn-add-pic").click(function (e) {
+				e.stopPropagation();
+				$("#addPRow").hide();
+				$("#titlePRow").css('display', 'flex');
+				_this.add();
+				Page.back();
+			});
+			// 继续添加
+			$("#btn-addAgain-pic").click(function (e) {
+				e.stopPropagation();
+				_this.add();
+				_this.$csPsize.val(512)
+				_this.$pbayonetCount.val(0)
+				_this.$pdiveway.val(1)
+				_this.$csPvstream.val(5000)
+				_this.$picDays.val(365)
+				$.showIndicator()
+				setTimeout(function () {
+					_this.infoShow("添加成功！");
+					$.hideIndicator();
+				}, 800)
+			})
+			// 删除按钮
+			$("#btn-delete-pic").click(function (e) {
+				e.stopPropagation();
+				_this.modalShow('DELETE', "确定要删除吗？", _this.delete);
+			})
+			// 完成编辑
+			$("#btn-edited-pic").click(function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				var domList = currentPicDom.find("h1");
+				// 更新Dom
+				$(domList[0]).text(_this.$csPsize.val());
+				$(domList[1]).text(_this.$pbayonetCount.val());
+				$(domList[2]).text(_this.$pdiveway.val());
+				$(domList[3]).text(_this.$csPvstream.val());
+				$(domList[4]).text(_this.$picDays.val());
+				Page.back();
+				_this.orderPic();
+			})
+			// 每次若编辑返回就出现对话框
+			$("#page_pic").on("input", 'input[type=number]', function () {
+				_this.edited = true;
+				_this.setRowResult(_this.$csPsize.val(), _this.$pbayonetCount.val(), _this.$pdiveway.val(), _this.$csPvstream.val(), _this.$picDays.val());
+			})
+		}
+	}
+	Pic.prototype = new Result();
+	var pic = new Pic();
+	pic.bindPicEvents();
+	/**
+	 * @class
+	 * @desc 云计算配单 增|继续增|删|改
+	 */
+	function Calc () {
+		this.$cDom = $("#calcRow");
+		this.btnGroupEdit = $("#cbtn-group-edit");
+		this.btnGroupAdd = $("#cbtn-group-add");
+
+		this.$calDataType = $("#calDataType");
+		this.$ccFcountEd = $("#ccFcountEd");
+		this.$cStoreDays = $("#cStoreDays");
+
+		this.$gross = $("#gross");
+
+		this.id = 0;
+		this.edited = false;
+		this.template = '<div class="msg-row cursor-active" id="video$id$">'
+						+	'<div class="msg-item">'
+						+		'<h1>$calDataType$</h1>'
+						+		'<p>数据类型</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$ccFcountEd$</h1>'
+						+		'<p>日数据量(万)</p>'
+						+	'</div>'
+						+	'<div class="msg-item">'
+						+		'<h1>$cStoreDays$</h1>'
+						+		'<p>保存天数</p>'
+						+	'</div>'
+						+ '</div>';
+		var _this = this;
+		this.setRowResult = function (a,b) {
+			_this.$gross.text((_this.computeCalc(a,b)).toFixed(4))
+		}
+		// 绑定从主页进入pic页的两种方法
+		this.bindEnterFromResult = function () {
+			// 新增图片存储
+			$(".addCalcBtn").click(function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				_this.btnGroupEdit.hide();
+				_this.btnGroupAdd.css("display", "flex");
+				// 初始化input
+				_this.$calDataType.val('过车')
+				_this.$ccFcountEd.val(0)
+				_this.$cStoreDays.val(30)
+				_this.$gross.text(0)
+				Page.enter(Page.pageCalc);
+			})
+			// 编辑图片每一行
+			$("#calcRow").on("click", ".msg-row", function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				_this.btnGroupAdd.hide();
+				_this.btnGroupEdit.css("display", "flex");
+				currentCalcDom = $(this);
+				// 使用当前点击dom更新input
+				var domList = currentCalcDom.find("h1");
+				_this.$calDataType.val($(domList[0]).text());
+				_this.$ccFcountEd.val($(domList[1]).text());
+				_this.$cStoreDays.val($(domList[2]).text());
+				_this.setRowResult($(domList[1]).text(),$(domList[2]).text())
+				Page.enter(Page.pageCalc); 
+			})
+		}
+		// 将编辑后内容添加入result页
+		this.add = function (cache) {
+			// 更新Dom
+			var $dom = this.template.replace("$id$", this.id)
+									.replace("$calDataType$", this.$calDataType.val())
+									.replace("$ccFcountEd$", this.$ccFcountEd.val())
+									.replace("$cStoreDays$", this.$cStoreDays.val())
+			this.$cDom.append($dom);      // 作为子节点插入Result页面中
+			this.id++;
+			this.orderCalc();
+		}
+		// 编辑页面返回
+		this.back = function () {
+			Page.back();
+		}
+		// 编辑页执行删除
+		this.delete = function () {
+			currentCalcDom.remove();
+			if($("#calcRow .msg-row").length == 0) {
+				$("#addCRow").show();
+				$("#titleCRow").hide();
+			}
+			Page.back();
+			_this.infoShow("删除成功！");
+			_this.orderCalc();
+		}
+		// 添加点击事件
+		this.bindCalcEvents = function () {
+			this.bindEnterFromResult();
+			// 左上角关闭
+			$("#back-btn-calc").click(function (e) {
+				e.stopPropagation();
+				_this.edited ? _this.modalShow('BACK', "确定要退出吗？", _this.back) : Page.back();
+			})
+			// 完成添加按钮
+			$("#btn-add-calc").click(function (e) {
+				e.stopPropagation();
+				$("#addCRow").hide();
+				$("#titleCRow").css('display', 'flex');
+				_this.add();
+				Page.back();
+			});
+			// 继续添加
+			$("#btn-addAgain-calc").click(function (e) {
+				e.stopPropagation();
+				_this.add();
+				_this.$calDataType.val('过车')
+				_this.$ccFcountEd.val(0)
+				_this.$cStoreDays.val(30)
+				$.showIndicator()
+				setTimeout(function () {
+					_this.infoShow("添加成功！");
+					$.hideIndicator();
+				}, 800)
+			})
+			// 删除按钮
+			$("#btn-delete-calc").click(function (e) {
+				e.stopPropagation();
+				_this.modalShow('DELETE', "确定要删除吗？", _this.delete);
+			})
+			// 完成编辑
+			$("#btn-edited-calc").click(function (e) {
+				e.stopPropagation();
+				_this.edited = false;
+				var domList = currentCalcDom.find("h1");
+				// 更新Dom
+				$(domList[0]).text(_this.$calDataType.val());
+				$(domList[1]).text(_this.$ccFcountEd.val());
+				$(domList[2]).text(_this.$cStoreDays.val());
+				_this.orderCalc();
+				Page.back();
+			})
+			// 每次若编辑返回就出现对话框
+			$("#page_calc").on("input", 'input[type=number]', function () {
+				_this.edited = true;
+				_this.setRowResult(_this.$ccFcountEd.val(), _this.$cStoreDays.val());
+			})
+			$("#page_calc").on("change", 'input[type=text]', function () {
+				_this.edited = true;
+			})
+		}
+	}
+	Calc.prototype = new Result();
+	var calc = new Calc();
+	calc.bindCalcEvents();
+	/**
+	 * @class
+	 * @desc 提供配置选项页
+	 */
+	function Config () {
+		this.disc = 36;
+		this.diskCapacity = 4;
+		this.nodeRedundant = false;
+		this.serviceGet = false;
+		this.collideOrNot = false;
+		this.videoCloudOrNot = false;
+		this.addEvent = function () {
+			var _this = this;
+			// 矩形半透明样式选择框
+			$("#disc").on("click", 'span', function () {
+				_this.disc = $(this).text()
+				$(this).addClass('radio-checked').siblings().removeClass('radio-checked');
+			})
+			$("#diskCapacity").on("click", 'span', function () {
+				_this.diskCapacity = $(this).text()
+				$(this).addClass('radio-checked').siblings().removeClass('radio-checked');
+			})
+			// 关闭、开启按钮
+			$("#page_config").on("click", 'input[type=checkbox]', function (e) {
+				_this[$(this).context.id] = $(this).is(":checked");
+			})
+			// 生成图片按钮
+			$("#btn-build-config").click(function () {
+				if(!$("#projectName").val()) {
+					$.alert("请返回页面输入项目名称");
+					return;
+				}
+				$.showPreloader();
+				setTimeout(function () {
+					_this.buildList();
+				}, 1000)
+			})
+		}
+		this.init = function () {
+			this.addEvent();
+			$("#nodeRedundant").click();
+		}
+	}
+	Config.prototype = new Common();
+	var config = new Config();
+	config.init();
+</script>
+</html>
